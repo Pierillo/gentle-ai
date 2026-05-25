@@ -4,6 +4,8 @@ import (
 	"context"
 	"runtime"
 	"testing"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 func TestParseVersionNode(t *testing.T) {
@@ -141,6 +143,26 @@ func TestDefineDependenciesNodeMinVersion(t *testing.T) {
 	}
 
 	t.Fatalf("node dependency not found")
+}
+
+func TestDefineDependenciesCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	profile := PlatformProfile{OS: "windows", PackageManager: "winget", Supported: true}
+	deps := defineDependencies(profile)
+	if len(deps) != 2 {
+		t.Fatalf("defineDependencies() len = %d, want 2", len(deps))
+	}
+	if deps[0].Name != "git" || deps[1].Name != "engram" {
+		t.Fatalf("defineDependencies() names = [%s, %s], want [git, engram]", deps[0].Name, deps[1].Name)
+	}
+	if deps[0].Required || deps[1].Required {
+		t.Fatalf("copilot-only deps should be optional: %+v", deps)
+	}
 }
 
 func TestDetectDepsWithMockDeps(t *testing.T) {

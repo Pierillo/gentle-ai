@@ -3392,6 +3392,7 @@ func TestSDDOrchestratorAssetSelection(t *testing.T) {
 		{agent: model.AgentClaudeCode, want: "generic/sdd-orchestrator.md"},
 		{agent: model.AgentOpenCode, want: "opencode/sdd-orchestrator.md"},
 		{agent: model.AgentVSCodeCopilot, want: "generic/sdd-orchestrator.md"},
+		{agent: model.AgentCopilotCLI, want: "generic/sdd-orchestrator.md"},
 	}
 
 	for _, tt := range tests {

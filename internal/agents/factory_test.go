@@ -72,6 +72,7 @@ func TestDefaultRegistrySupportedAgentsMatchesFactoryAgents(t *testing.T) {
 		model.AgentAntigravity,
 		model.AgentClaudeCode,
 		model.AgentCodex,
+		model.AgentCopilotCLI,
 		model.AgentCursor,
 		model.AgentGeminiCLI,
 		model.AgentKilocode,
@@ -98,5 +99,27 @@ func TestFactoryRejectsUnsupportedOpenClawLookalike(t *testing.T) {
 
 	if !errors.Is(err, ErrAgentNotSupported) {
 		t.Fatalf("NewAdapter() error = %v, want ErrAgentNotSupported", err)
+	}
+}
+
+func TestDefaultRegistryCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	registry, err := NewDefaultRegistry()
+	if err != nil {
+		t.Fatalf("NewDefaultRegistry() returned error: %v", err)
+	}
+
+	want := []model.AgentID{model.AgentCopilotCLI}
+	if got := registry.SupportedAgents(); !reflect.DeepEqual(got, want) {
+		t.Fatalf("SupportedAgents() = %v, want %v", got, want)
+	}
+
+	if _, err := NewAdapter(model.AgentOpenCode); !errors.Is(err, ErrAgentNotSupported) {
+		t.Fatalf("NewAdapter(%q) error = %v, want ErrAgentNotSupported", model.AgentOpenCode, err)
 	}
 }

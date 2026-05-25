@@ -311,7 +311,7 @@ func inject(configHomeDir, promptDir string, adapter agents.Adapter) (InjectionR
 		}
 		engramCommand := stableEngramCommandForMergedConfig(mcpPath, adapter.Agent())
 		var overlay []byte
-		if adapter.Agent() == model.AgentVSCodeCopilot {
+		if adapter.Agent() == model.AgentVSCodeCopilot || adapter.Agent() == model.AgentCopilotCLI {
 			overlay = vsCodeEngramOverlayJSON(engramCommand)
 		} else {
 			overlay = engramOverlayJSON(adapter.Agent(), engramCommand)
@@ -608,7 +608,7 @@ func existingMergedEngramCommand(raw []byte, agentID model.AgentID) (string, boo
 			return "", false
 		}
 		server = servers["engram"]
-	case model.AgentVSCodeCopilot:
+	case model.AgentVSCodeCopilot, model.AgentCopilotCLI:
 		servers, ok := root["servers"].(map[string]any)
 		if !ok {
 			return "", false

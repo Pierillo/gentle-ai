@@ -763,6 +763,40 @@ func TestRunArgs_UpgradeSkipsSelfUpdate(t *testing.T) {
 	}
 }
 
+func TestRunArgsUpdateDisabledInCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	var buf bytes.Buffer
+	err := RunArgs([]string{"update"}, &buf)
+	if err == nil {
+		t.Fatal("RunArgs(update) should fail in copilot-only build")
+	}
+	if !strings.Contains(err.Error(), "disables \"update\"") {
+		t.Fatalf("unexpected update error: %v", err)
+	}
+}
+
+func TestRunArgsUpgradeDisabledInCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	var buf bytes.Buffer
+	err := RunArgs([]string{"upgrade"}, &buf)
+	if err == nil {
+		t.Fatal("RunArgs(upgrade) should fail in copilot-only build")
+	}
+	if !strings.Contains(err.Error(), "disables \"upgrade\"") {
+		t.Fatalf("unexpected upgrade error: %v", err)
+	}
+}
+
 func TestIsExplicitUpdateFlow(t *testing.T) {
 	tests := []struct {
 		name string

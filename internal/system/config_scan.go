@@ -3,6 +3,8 @@ package system
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 // ConfigState records the filesystem presence of an agent's global config directory.
@@ -28,6 +30,12 @@ type ConfigState struct {
 // until the import cycle is resolved and ScanConfigs can delegate directly to
 // agents.DiscoverInstalled.
 func knownAgentConfigDirs(homeDir string) []ConfigState {
+	if model.IsCopilotOnlyBuild() {
+		return []ConfigState{
+			{Agent: "copilot-cli", Path: vscodeCopilotGlobalConfigDir(homeDir)},
+		}
+	}
+
 	return []ConfigState{
 		{Agent: "claude-code", Path: filepath.Join(homeDir, ".claude")},
 		{Agent: "opencode", Path: filepath.Join(homeDir, ".config", "opencode")},
@@ -35,6 +43,7 @@ func knownAgentConfigDirs(homeDir string) []ConfigState {
 		{Agent: "gemini-cli", Path: filepath.Join(homeDir, ".gemini")},
 		{Agent: "cursor", Path: filepath.Join(homeDir, ".cursor")},
 		{Agent: "vscode-copilot", Path: vscodeCopilotGlobalConfigDir(homeDir)},
+		{Agent: "copilot-cli", Path: vscodeCopilotGlobalConfigDir(homeDir)},
 		{Agent: "codex", Path: filepath.Join(homeDir, ".codex")},
 		{Agent: "antigravity", Path: filepath.Join(homeDir, ".gemini", "antigravity-cli")},
 		{Agent: "windsurf", Path: filepath.Join(homeDir, ".codeium", "windsurf")},
@@ -47,7 +56,8 @@ func knownAgentConfigDirs(homeDir string) []ConfigState {
 }
 
 // vscodeCopilotGlobalConfigDir returns ~/.copilot, the GlobalConfigDir used by
-// the vscode-copilot adapter across all platforms. The vscode adapter's
+// both the vscode-copilot and copilot-cli adapters across all platforms. The
+// vscode adapter's
 // SystemPromptDir and SettingsPath are OS-dependent, but GlobalConfigDir is not.
 func vscodeCopilotGlobalConfigDir(homeDir string) string {
 	return filepath.Join(homeDir, ".copilot")

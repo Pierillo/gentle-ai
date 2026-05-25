@@ -1,5 +1,10 @@
 # Quickstart
 
+> **Port note (this fork):** Copilot-only command is `gentle-copilot`, with `copilot-cli` as the only supported agent target.
+>
+> Scoop install (manifest):  
+> `scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json`
+
 ## Prerequisites
 
 ### macOS

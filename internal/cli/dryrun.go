@@ -11,8 +11,12 @@ import (
 
 func RenderDryRun(result InstallResult) string {
 	b := &strings.Builder{}
+	title := "AI Gentle Stack"
+	if model.IsCopilotOnlyBuild() {
+		title = "Gentle Copilot"
+	}
 
-	_, _ = fmt.Fprintln(b, "AI Gentle Stack dry-run")
+	_, _ = fmt.Fprintf(b, "%s dry-run\n", title)
 	_, _ = fmt.Fprintln(b, "=====================")
 	_, _ = fmt.Fprintf(b, "Agents: %s\n", joinAgentIDs(result.Resolved.Agents))
 	_, _ = fmt.Fprintf(b, "Unsupported agents: %s\n", joinAgentIDs(result.Resolved.UnsupportedAgents))

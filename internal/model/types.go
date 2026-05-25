@@ -2,6 +2,17 @@ package model
 
 type AgentID string
 
+// BuildFlavor selects an optional distribution variant at runtime/build-time.
+// Empty means default multi-agent distribution.
+//
+// Supported values:
+// - "copilot-only": expose only Copilot CLI surfaces.
+var BuildFlavor = ""
+
+func IsCopilotOnlyBuild() bool {
+	return BuildFlavor == "copilot-only"
+}
+
 const (
 	AgentClaudeCode    AgentID = "claude-code"
 	AgentOpenCode      AgentID = "opencode"
@@ -9,6 +20,7 @@ const (
 	AgentGeminiCLI     AgentID = "gemini-cli"
 	AgentCursor        AgentID = "cursor"
 	AgentVSCodeCopilot AgentID = "vscode-copilot"
+	AgentCopilotCLI    AgentID = "copilot-cli"
 	AgentCodex         AgentID = "codex"
 	AgentAntigravity   AgentID = "antigravity"
 	AgentWindsurf      AgentID = "windsurf"

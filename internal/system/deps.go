@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 // Dependency represents a system prerequisite with detection and install metadata.
@@ -38,6 +40,23 @@ var goVersionRegexp = regexp.MustCompile(`go(\d+\.\d+(?:\.\d+)?)`)
 
 // defineDependencies returns the canonical dependency list for the installer.
 func defineDependencies(profile PlatformProfile) []Dependency {
+	if model.IsCopilotOnlyBuild() {
+		return []Dependency{
+			{
+				Name:        "git",
+				Required:    false,
+				DetectCmd:   []string{"git", "--version"},
+				InstallHint: installHintGit(profile),
+			},
+			{
+				Name:        "engram",
+				Required:    false,
+				DetectCmd:   []string{"engram", "version"},
+				InstallHint: "Optional for memory features. Install from https://github.com/Gentleman-Programming/engram/releases",
+			},
+		}
+	}
+
 	deps := []Dependency{
 		{
 			Name:        "git",

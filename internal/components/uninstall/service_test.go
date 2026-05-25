@@ -599,3 +599,40 @@ func TestComponentOperationsSDD_ClaudeRemovesSkillRegistryHook(t *testing.T) {
 		t.Fatalf("unrelated hooks should be preserved:\n%s", text)
 	}
 }
+
+func TestManagedComponentsForBuildCopilotOnly(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	components := managedComponentsForBuild()
+	if len(components) != 5 {
+		t.Fatalf("managedComponentsForBuild() len = %d, want 5", len(components))
+	}
+	for _, disallowed := range []model.ComponentID{
+		model.ComponentTheme,
+		model.ComponentClaudeTheme,
+		model.ComponentOpenCodeGentleLogo,
+		model.ComponentGGA,
+	} {
+		for _, component := range components {
+			if component == disallowed {
+				t.Fatalf("managedComponentsForBuild() should exclude %q in copilot-only", disallowed)
+			}
+		}
+	}
+}
+
+func TestGlobalBackupTargetsCopilotOnly(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	if targets := globalBackupTargets(t.TempDir()); len(targets) != 0 {
+		t.Fatalf("globalBackupTargets() len = %d, want 0 in copilot-only", len(targets))
+	}
+}

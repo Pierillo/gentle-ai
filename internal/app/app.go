@@ -55,7 +55,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 	if len(args) > 0 {
 		switch args[0] {
 		case "version", "--version", "-v":
-			_, _ = fmt.Fprintf(stdout, "gentle-ai %s\n", Version)
+			_, _ = fmt.Fprintf(stdout, "%s %s\n", effectiveCommandName(), Version)
 			return nil
 		case "help", "--help", "-h":
 			printHelp(stdout, Version)
@@ -95,7 +95,7 @@ func RunArgs(args []string, stdout io.Writer) error {
 
 	// Self-update: check for a newer gentle-ai release and apply it before
 	// CLI/TUI dispatch. Errors are non-fatal — logged and swallowed.
-	if !isExplicitUpdateFlow(args) {
+	if effectiveCommandName() == "gentle-ai" && !isExplicitUpdateFlow(args) {
 		if err := selfUpdateFn(context.Background(), Version, resolveProfile(), stdout); err != nil {
 			_, _ = fmt.Fprintf(stdout, "Warning: self-update failed: %v\n", err)
 		}
@@ -131,8 +131,14 @@ func RunArgs(args []string, stdout io.Writer) error {
 
 	switch args[0] {
 	case "update":
+		if model.IsCopilotOnlyBuild() {
+			return fmt.Errorf("%s disables %q — use your internal release channel for updates", effectiveCommandName(), "update")
+		}
 		return runUpdate(context.Background(), Version, resolveProfile(), stdout)
 	case "upgrade":
+		if model.IsCopilotOnlyBuild() {
+			return fmt.Errorf("%s disables %q — use your internal release channel for updates", effectiveCommandName(), "upgrade")
+		}
 		return runUpgrade(context.Background(), args[1:], result, stdout)
 	case "install":
 		installResult, err := cli.RunInstall(args[1:], result)
@@ -172,13 +178,13 @@ func RunArgs(args []string, stdout io.Writer) error {
 	case "restore":
 		return cli.RunRestore(args[1:], stdout)
 	default:
-		return fmt.Errorf("unknown command %q — run 'gentle-ai help' for available commands", args[0])
+		return fmt.Errorf("unknown command %q — run '%s help' for available commands", args[0], effectiveCommandName())
 	}
 }
 
 func runSkillRegistry(args []string, stdout io.Writer) error {
 	if len(args) == 0 || args[0] != "refresh" {
-		return fmt.Errorf("usage: gentle-ai skill-registry refresh [--cwd <dir>] [--force] [--quiet] [--no-gitignore]")
+		return fmt.Errorf("usage: %s skill-registry refresh [--cwd <dir>] [--force] [--quiet] [--no-gitignore]", effectiveCommandName())
 	}
 
 	cwd := ""

@@ -3,30 +3,41 @@ package app
 import (
 	"fmt"
 	"io"
+	"strings"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 func printHelp(w io.Writer, version string) {
-	fmt.Fprintf(w, `gentle-ai — Gentle-AI: Ecosystem, Frameworks, Workflows (%s)
-
-USAGE
-  gentle-ai                     Launch interactive TUI
-  gentle-ai <command> [flags]
-
-COMMANDS
-  install      Configure AI coding agents on this machine
+	command := effectiveCommandName()
+	commands := `  install      Configure AI coding agents on this machine
   uninstall    Remove Gentle AI managed files from this machine
   sync         Sync agent configs and skills to current version
   skill-registry refresh
                Refresh .atl/skill-registry.md with cache-hit fast path
-  update       Check for available updates
-  upgrade      Apply updates to managed tools
   restore      Restore a config backup
-  version      Print version
+  version      Print version`
+	if !model.IsCopilotOnlyBuild() {
+		commands = strings.Join([]string{
+			commands,
+			"  update       Check for available updates",
+			"  upgrade      Apply updates to managed tools",
+		}, "\n")
+	}
+
+	fmt.Fprintf(w, `%s — Gentle-AI: Ecosystem, Frameworks, Workflows (%s)
+
+USAGE
+  %s                     Launch interactive TUI
+  %s <command> [flags]
+
+COMMANDS
+%s
 
 FLAGS
   --help, -h    Show this help
 
-Run 'gentle-ai help' for this message.
+Run '%s help' for this message.
 Documentation: https://github.com/Gentleman-Programming/gentle-ai
-`, version)
+`, command, version, command, command, commands, command)
 }

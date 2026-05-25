@@ -22,6 +22,13 @@ func NormalizeInstallFlags(flags InstallFlags, detection system.DetectionResult)
 		agents = asAgentIDs(flags.Agents)
 	}
 	selection.Agents = unique(agents)
+	if model.IsCopilotOnlyBuild() {
+		for _, agent := range selection.Agents {
+			if agent != model.AgentCopilotCLI {
+				return InstallInput{}, fmt.Errorf("copilot-only build supports only agent %q (received %q)", model.AgentCopilotCLI, agent)
+			}
+		}
+	}
 
 	persona, err := normalizePersona(flags.Persona)
 	if err != nil {
@@ -92,8 +99,16 @@ func normalizeComponents(values []string, preset model.PresetID) ([]model.Compon
 	}
 
 	allowed := map[model.ComponentID]struct{}{}
-	for _, component := range catalog.MVPComponents() {
-		allowed[component.ID] = struct{}{}
+	if model.IsCopilotOnlyBuild() {
+		allowed[model.ComponentEngram] = struct{}{}
+		allowed[model.ComponentSDD] = struct{}{}
+		allowed[model.ComponentSkills] = struct{}{}
+		allowed[model.ComponentContext7] = struct{}{}
+		allowed[model.ComponentPersona] = struct{}{}
+	} else {
+		for _, component := range catalog.MVPComponents() {
+			allowed[component.ID] = struct{}{}
+		}
 	}
 
 	components := []model.ComponentID{}
@@ -144,6 +159,25 @@ func normalizeSDDMode(value string) (model.SDDModeID, error) {
 }
 
 func componentsForPreset(preset model.PresetID) []model.ComponentID {
+	if model.IsCopilotOnlyBuild() {
+		switch preset {
+		case model.PresetMinimal:
+			return []model.ComponentID{model.ComponentEngram}
+		case model.PresetEcosystemOnly:
+			return []model.ComponentID{model.ComponentEngram, model.ComponentSDD, model.ComponentSkills, model.ComponentContext7}
+		case model.PresetCustom:
+			return nil
+		default:
+			return []model.ComponentID{
+				model.ComponentEngram,
+				model.ComponentSDD,
+				model.ComponentSkills,
+				model.ComponentContext7,
+				model.ComponentPersona,
+			}
+		}
+	}
+
 	switch preset {
 	case model.PresetMinimal:
 		return []model.ComponentID{model.ComponentEngram}
@@ -167,6 +201,10 @@ func componentsForPreset(preset model.PresetID) []model.ComponentID {
 }
 
 func defaultAgentsFromDetection(detection system.DetectionResult) []model.AgentID {
+	if model.IsCopilotOnlyBuild() {
+		return []model.AgentID{model.AgentCopilotCLI}
+	}
+
 	agents := []model.AgentID{}
 	for _, state := range detection.Configs {
 		if !state.Exists {
@@ -186,6 +224,8 @@ func defaultAgentsFromDetection(detection system.DetectionResult) []model.AgentI
 			agents = append(agents, model.AgentCursor)
 		case string(model.AgentVSCodeCopilot):
 			agents = append(agents, model.AgentVSCodeCopilot)
+		case string(model.AgentCopilotCLI):
+			agents = append(agents, model.AgentCopilotCLI)
 		case string(model.AgentCodex):
 			agents = append(agents, model.AgentCodex)
 		case string(model.AgentAntigravity):

@@ -37,6 +37,7 @@ Release artifacts are produced by CI, but Windows users should install through S
 | Gemini CLI | `%USERPROFILE%\.gemini\` |
 | Cursor | `%USERPROFILE%\.cursor\` |
 | VS Code Copilot | `%APPDATA%\Code\User\` (settings, MCP, prompts) + `%USERPROFILE%\.copilot\` (skills) |
+| Copilot CLI | `%USERPROFILE%\.copilot\` (`copilot-instructions.md`, `skills`, `mcp.json`) |
 | Codex | `%USERPROFILE%\.codex\` |
 | Windsurf | `%USERPROFILE%\.codeium\windsurf\` (skills, MCP, rules) + `%APPDATA%\Windsurf\User\` (settings) |
 | Kimi | `%USERPROFILE%\.kimi\` (includes `config.toml`, system prompt, agents, MCP) |

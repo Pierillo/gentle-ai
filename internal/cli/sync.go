@@ -282,13 +282,24 @@ func BuildSyncSelection(flags SyncFlags, agentIDs []model.AgentID) model.Selecti
 	// "Senior Architect") that overlap with persona's legacy-block fingerprints.
 	// Running persona last would cause its StripLegacyPersonaBlock pass to
 	// detect the just-written managed sections as legacy and strip them.
-	components := []model.ComponentID{
-		model.ComponentPersona,
-		model.ComponentSDD,
-		model.ComponentEngram,
-		model.ComponentContext7,
-		model.ComponentGGA,
-		model.ComponentSkills,
+	components := []model.ComponentID{}
+	if model.IsCopilotOnlyBuild() {
+		components = []model.ComponentID{
+			model.ComponentPersona,
+			model.ComponentSDD,
+			model.ComponentEngram,
+			model.ComponentContext7,
+			model.ComponentSkills,
+		}
+	} else {
+		components = []model.ComponentID{
+			model.ComponentPersona,
+			model.ComponentSDD,
+			model.ComponentEngram,
+			model.ComponentContext7,
+			model.ComponentGGA,
+			model.ComponentSkills,
+		}
 	}
 
 	if flags.IncludePermissions {
@@ -789,6 +800,13 @@ func RunSync(args []string) (SyncResult, error) {
 		agentIDs = DiscoverAgents(homeDir)
 	}
 	agentIDs = unique(agentIDs)
+	if model.IsCopilotOnlyBuild() {
+		for _, id := range agentIDs {
+			if id != model.AgentCopilotCLI {
+				return SyncResult{}, fmt.Errorf("copilot-only build supports only agent %q (received %q)", model.AgentCopilotCLI, id)
+			}
+		}
+	}
 
 	selection := BuildSyncSelection(flags, agentIDs)
 
@@ -866,9 +884,10 @@ func RunSync(args []string) (SyncResult, error) {
 //   - All managed assets were already current (NoOp=true, FilesChanged=0).
 func RenderSyncReport(result SyncResult) string {
 	var b strings.Builder
+	command := effectiveCommandName()
 
 	if result.NoOp {
-		fmt.Fprintln(&b, "gentle-ai sync — no managed sync actions needed")
+		fmt.Fprintf(&b, "%s sync — no managed sync actions needed\n", command)
 		if len(result.Agents) == 0 {
 			fmt.Fprintln(&b, "No agents were discovered or specified. Nothing to sync.")
 		} else {
@@ -879,7 +898,7 @@ func RenderSyncReport(result SyncResult) string {
 	}
 
 	if result.DryRun {
-		fmt.Fprintln(&b, "gentle-ai sync — dry-run")
+		fmt.Fprintf(&b, "%s sync — dry-run\n", command)
 		fmt.Fprintf(&b, "Agents: %s\n", joinAgentIDs(result.Agents))
 
 		compParts := make([]string, 0, len(result.Selection.Components))
@@ -894,7 +913,7 @@ func RenderSyncReport(result SyncResult) string {
 		return strings.TrimRight(b.String(), "\n")
 	}
 
-	fmt.Fprintln(&b, "gentle-ai sync — managed sync executed")
+	fmt.Fprintf(&b, "%s sync — managed sync executed\n", command)
 	fmt.Fprintf(&b, "Agents synced: %s\n", joinAgentIDs(result.Agents))
 
 	compParts := make([]string, 0, len(result.Selection.Components))
