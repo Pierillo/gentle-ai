@@ -5,6 +5,7 @@ import (
 
 	"github.com/gentleman-programming/gentle-ai/internal/agents/antigravity"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
+	"github.com/gentleman-programming/gentle-ai/internal/agents/copilotcli"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/codex"
 	cursoradapter "github.com/gentleman-programming/gentle-ai/internal/agents/cursor"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/gemini"
@@ -27,6 +28,7 @@ var defaultAgentIDs = []model.AgentID{
 	model.AgentGeminiCLI,
 	model.AgentCursor,
 	model.AgentVSCodeCopilot,
+	model.AgentCopilotCLI,
 	model.AgentCodex,
 	model.AgentAntigravity,
 	model.AgentWindsurf,
@@ -51,6 +53,8 @@ func NewAdapter(agent model.AgentID) (Adapter, error) {
 		return cursoradapter.NewAdapter(), nil
 	case model.AgentVSCodeCopilot:
 		return vscode.NewAdapter(), nil
+	case model.AgentCopilotCLI:
+		return copilotcli.NewAdapter(), nil
 	case model.AgentCodex:
 		return codex.NewAdapter(), nil
 	case model.AgentAntigravity:

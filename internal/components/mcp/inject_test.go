@@ -8,6 +8,7 @@ import (
 
 	"github.com/gentleman-programming/gentle-ai/internal/agents"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
+	"github.com/gentleman-programming/gentle-ai/internal/agents/copilotcli"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/codex"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/kimi"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/openclaw"
@@ -233,6 +234,44 @@ func TestInjectVSCodeWritesContext7ToMCPConfigFile(t *testing.T) {
 	t.Setenv("XDG_CONFIG_HOME", filepath.Join(home, ".config"))
 	t.Setenv("APPDATA", filepath.Join(home, "AppData", "Roaming"))
 	adapter := vscode.NewAdapter()
+
+	first, err := Inject(home, adapter)
+	if err != nil {
+		t.Fatalf("Inject() first error = %v", err)
+	}
+	if !first.Changed {
+		t.Fatalf("Inject() first changed = false")
+	}
+
+	second, err := Inject(home, adapter)
+	if err != nil {
+		t.Fatalf("Inject() second error = %v", err)
+	}
+	if second.Changed {
+		t.Fatalf("Inject() second changed = true")
+	}
+
+	path := adapter.MCPConfigPath(home, "context7")
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("ReadFile(mcp.json) error = %v", err)
+	}
+
+	text := string(content)
+	if !strings.Contains(text, `"servers"`) {
+		t.Fatal("mcp.json missing servers key")
+	}
+	if !strings.Contains(text, `"context7"`) {
+		t.Fatal("mcp.json missing context7 server")
+	}
+	if strings.Contains(text, `"mcpServers"`) {
+		t.Fatal("mcp.json should use 'servers' key, not 'mcpServers'")
+	}
+}
+
+func TestInjectCopilotCLIWritesContext7ToMCPConfigFile(t *testing.T) {
+	home := t.TempDir()
+	adapter := copilotcli.NewAdapter()
 
 	first, err := Inject(home, adapter)
 	if err != nil {

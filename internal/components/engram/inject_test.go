@@ -11,6 +11,7 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/agents"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/antigravity"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
+	"github.com/gentleman-programming/gentle-ai/internal/agents/copilotcli"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/codex"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/gemini"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/openclaw"
@@ -517,6 +518,40 @@ func TestInjectVSCodeMergesEngramToMCPConfigFile(t *testing.T) {
 		t.Fatal("mcp.json should use 'servers' key, not 'mcpServers'")
 	}
 	// RED: VS Code overlay must include --tools=agent
+	assertArgsHaveToolsAgent(t, mcpPath)
+}
+
+func TestInjectCopilotCLIMergesEngramToMCPConfigFile(t *testing.T) {
+	home := t.TempDir()
+	adapter := copilotcli.NewAdapter()
+
+	result, err := Inject(home, adapter)
+	if err != nil {
+		t.Fatalf("Inject(copilot-cli) error = %v", err)
+	}
+	if !result.Changed {
+		t.Fatalf("Inject(copilot-cli) changed = false")
+	}
+
+	mcpPath := adapter.MCPConfigPath(home, "engram")
+	content, err := os.ReadFile(mcpPath)
+	if err != nil {
+		t.Fatalf("ReadFile(mcp.json) error = %v", err)
+	}
+
+	text := string(content)
+	if !strings.Contains(text, `"servers"`) {
+		t.Fatal("mcp.json missing servers key")
+	}
+	if !strings.Contains(text, `"engram"`) {
+		t.Fatal("mcp.json missing engram server")
+	}
+	if !strings.Contains(text, `"mcp"`) {
+		t.Fatal("mcp.json missing engram args mcp")
+	}
+	if strings.Contains(text, `"mcpServers"`) {
+		t.Fatal("mcp.json should use 'servers' key, not 'mcpServers'")
+	}
 	assertArgsHaveToolsAgent(t, mcpPath)
 }
 

@@ -96,6 +96,7 @@ func TestDefaultRegistryIncludesAllAgents(t *testing.T) {
 		model.AgentOpenCode,
 		model.AgentGeminiCLI,
 		model.AgentCursor,
+		model.AgentCopilotCLI,
 		model.AgentVSCodeCopilot,
 		model.AgentCodex,
 		model.AgentAntigravity,

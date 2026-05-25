@@ -480,7 +480,7 @@ func (s *Service) componentOperations(adapter agents.Adapter, componentID model.
 				ops = append(ops, rewriteJSONFile(path, jsonPath{"permission"}))
 			case model.AgentGeminiCLI:
 				ops = append(ops, rewriteJSONFile(path, jsonPath{"general", "defaultApprovalMode"}))
-			case model.AgentVSCodeCopilot:
+			case model.AgentVSCodeCopilot, model.AgentCopilotCLI:
 				ops = append(ops, rewriteJSONFile(path, jsonPath{"chat.tools.autoApprove"}))
 			}
 		}
@@ -679,7 +679,7 @@ func context7Operations(adapter agents.Adapter, homeDir string) []operation {
 	case model.StrategyMCPConfigFile:
 		path := adapter.MCPConfigPath(homeDir, "context7")
 		switch adapter.Agent() {
-		case model.AgentVSCodeCopilot:
+		case model.AgentVSCodeCopilot, model.AgentCopilotCLI:
 			return []operation{rewriteJSONFile(path, jsonPath{"servers", "context7"})}
 		case model.AgentAntigravity:
 			return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "context7"})}
@@ -723,7 +723,7 @@ func engramOperations(adapter agents.Adapter, homeDir string) []operation {
 		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "engram"})}
 	case model.StrategyMCPConfigFile:
 		path := adapter.MCPConfigPath(homeDir, "engram")
-		if adapter.Agent() == model.AgentVSCodeCopilot {
+		if adapter.Agent() == model.AgentVSCodeCopilot || adapter.Agent() == model.AgentCopilotCLI {
 			return []operation{rewriteJSONFile(path, jsonPath{"servers", "engram"})}
 		}
 		return []operation{rewriteJSONFile(path, jsonPath{"mcpServers", "engram"})}

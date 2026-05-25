@@ -35,6 +35,7 @@ func knownAgentConfigDirs(homeDir string) []ConfigState {
 		{Agent: "gemini-cli", Path: filepath.Join(homeDir, ".gemini")},
 		{Agent: "cursor", Path: filepath.Join(homeDir, ".cursor")},
 		{Agent: "vscode-copilot", Path: vscodeCopilotGlobalConfigDir(homeDir)},
+		{Agent: "copilot-cli", Path: vscodeCopilotGlobalConfigDir(homeDir)},
 		{Agent: "codex", Path: filepath.Join(homeDir, ".codex")},
 		{Agent: "antigravity", Path: filepath.Join(homeDir, ".gemini", "antigravity-cli")},
 		{Agent: "windsurf", Path: filepath.Join(homeDir, ".codeium", "windsurf")},
@@ -47,7 +48,8 @@ func knownAgentConfigDirs(homeDir string) []ConfigState {
 }
 
 // vscodeCopilotGlobalConfigDir returns ~/.copilot, the GlobalConfigDir used by
-// the vscode-copilot adapter across all platforms. The vscode adapter's
+// both the vscode-copilot and copilot-cli adapters across all platforms. The
+// vscode adapter's
 // SystemPromptDir and SettingsPath are OS-dependent, but GlobalConfigDir is not.
 func vscodeCopilotGlobalConfigDir(homeDir string) string {
 	return filepath.Join(homeDir, ".copilot")

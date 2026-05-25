@@ -10,6 +10,7 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/agents"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/antigravity"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/claude"
+	"github.com/gentleman-programming/gentle-ai/internal/agents/copilotcli"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/codex"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/cursor"
 	"github.com/gentleman-programming/gentle-ai/internal/agents/gemini"
@@ -25,6 +26,7 @@ func cursorAdapter() agents.Adapter      { return cursor.NewAdapter() }
 func vscodeAdapter() agents.Adapter      { return vscode.NewAdapter() }
 func codexAdapter() agents.Adapter       { return codex.NewAdapter() }
 func antigravityAdapter() agents.Adapter { return antigravity.NewAdapter() }
+func copilotCLIAdapter() agents.Adapter  { return copilotcli.NewAdapter() }
 
 func TestInjectOpenCodeIsIdempotent(t *testing.T) {
 	home := t.TempDir()
@@ -295,5 +297,20 @@ func TestInjectCodexSkipsPermissions(t *testing.T) {
 	}
 	if len(result.Files) != 0 {
 		t.Fatalf("Inject() for Codex should return no files, got %v", result.Files)
+	}
+}
+
+func TestInjectCopilotCLISkipsPermissions(t *testing.T) {
+	home := t.TempDir()
+
+	result, err := Inject(home, copilotCLIAdapter())
+	if err != nil {
+		t.Fatalf("Inject() error = %v", err)
+	}
+	if result.Changed {
+		t.Fatal("Inject() for Copilot CLI should not change anything (no settings.json surface)")
+	}
+	if len(result.Files) != 0 {
+		t.Fatalf("Inject() for Copilot CLI should return no files, got %v", result.Files)
 	}
 }
