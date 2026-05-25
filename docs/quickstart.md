@@ -1,9 +1,9 @@
 # Quickstart
 
-> **Port note (this fork):** Copilot-only command is `gentle-copilot`, with `copilot-cli` as the only supported agent target.
+> **Port note (this fork):** Copilot-only command is `pierillo-antislop-boring-toolkit`, with `copilot-cli` as the only supported agent target.
 >
 > Scoop install (manifest):  
-> `scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json`
+> `scoop install https://github.com/Pierillo/pierillo-antislop-boring-toolkit/releases/download/v1.30.11-antislop.1/pierillo-antislop-boring-toolkit.json`
 
 ## Prerequisites
 

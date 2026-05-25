@@ -162,8 +162,8 @@ func TestRunRestore_UsageUsesCopilotCommandNameInCopilotOnlyBuild(t *testing.T) 
 	if err == nil {
 		t.Fatal("RunRestoreWithFn() expected usage error")
 	}
-	if !strings.Contains(err.Error(), "usage: gentle-copilot restore") {
-		t.Fatalf("usage error should reference gentle-copilot; got: %v", err)
+	if !strings.Contains(err.Error(), "usage: pierillo-antislop-boring-toolkit restore") {
+		t.Fatalf("usage error should reference pierillo-antislop-boring-toolkit; got: %v", err)
 	}
 }
 
@@ -183,8 +183,8 @@ func TestRunRestore_UnknownIDErrorUsesCopilotCommandNameInCopilotOnlyBuild(t *te
 	if err == nil {
 		t.Fatal("RunRestoreWithFn() expected unknown backup error")
 	}
-	if !strings.Contains(err.Error(), "gentle-copilot restore --list") {
-		t.Fatalf("unknown backup error should reference gentle-copilot; got: %v", err)
+	if !strings.Contains(err.Error(), "pierillo-antislop-boring-toolkit restore --list") {
+		t.Fatalf("unknown backup error should reference pierillo-antislop-boring-toolkit; got: %v", err)
 	}
 }
 

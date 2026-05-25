@@ -13,7 +13,7 @@ func RenderDryRun(result InstallResult) string {
 	b := &strings.Builder{}
 	title := "AI Gentle Stack"
 	if model.IsCopilotOnlyBuild() {
-		title = "Gentle Copilot"
+		title = "Pierillo AntiSlop Boring Toolkit"
 	}
 
 	_, _ = fmt.Fprintf(b, "%s dry-run\n", title)

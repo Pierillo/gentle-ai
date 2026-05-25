@@ -1,4 +1,4 @@
-# gentle-copilot (GitHub Copilot CLI port)
+# pierillo-antislop-boring-toolkit (GitHub Copilot CLI port)
 
 Este repositorio es un **port de Gentle-AI** reducido para usarlo con **GitHub Copilot CLI**.
 
@@ -9,7 +9,7 @@ Este repositorio es un **port de Gentle-AI** reducido para usarlo con **GitHub C
 | Área | Estado |
 | --- | --- |
 | Agente soportado | `copilot-cli` (único) |
-| Binario/comando | `gentle-copilot` |
+| Binario/comando | `pierillo-antislop-boring-toolkit` |
 | Superficies gestionadas | `~/.copilot/copilot-instructions.md`, `~/.copilot/skills/*`, `~/.copilot/mcp.json` |
 | `update` / `upgrade` | Deshabilitados en este flavor |
 
@@ -20,36 +20,36 @@ Este repositorio es un **port de Gentle-AI** reducido para usarlo con **GitHub C
 Instalar directo desde el manifest del release:
 
 ```powershell
-scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
+scoop install https://github.com/Pierillo/pierillo-antislop-boring-toolkit/releases/download/v1.30.11-antislop.1/pierillo-antislop-boring-toolkit.json
 ```
 
 Verificar:
 
 ```powershell
-gentle-copilot --version
+pierillo-antislop-boring-toolkit --version
 ```
 
 ---
 
 ## Quickstart (propio de este port)
 
-1. Instala `gentle-copilot` con el comando de arriba.
+1. Instala `pierillo-antislop-boring-toolkit` con el comando de arriba.
 2. Ejecuta un dry-run:
 
 ```powershell
-gentle-copilot install --dry-run
+pierillo-antislop-boring-toolkit install --dry-run
 ```
 
 3. Aplica instalación:
 
 ```powershell
-gentle-copilot install
+pierillo-antislop-boring-toolkit install
 ```
 
 4. Refresca configuración gestionada cuando corresponda:
 
 ```powershell
-gentle-copilot sync
+pierillo-antislop-boring-toolkit sync
 ```
 
 ---
@@ -63,31 +63,31 @@ Después de instalar:
 3. Cuando cambies skills/reglas del repo, actualiza el registro:
 
 ```powershell
-gentle-copilot skill-registry refresh
+pierillo-antislop-boring-toolkit skill-registry refresh
 ```
 
 Comandos disponibles en este port:
 
-- `gentle-copilot install`
-- `gentle-copilot sync`
-- `gentle-copilot uninstall`
-- `gentle-copilot restore`
-- `gentle-copilot version`
-- `gentle-copilot skill-registry refresh`
+- `pierillo-antislop-boring-toolkit install`
+- `pierillo-antislop-boring-toolkit sync`
+- `pierillo-antislop-boring-toolkit uninstall`
+- `pierillo-antislop-boring-toolkit restore`
+- `pierillo-antislop-boring-toolkit version`
+- `pierillo-antislop-boring-toolkit skill-registry refresh`
 
 Comandos bloqueados en este port:
 
-- `gentle-copilot update`
-- `gentle-copilot upgrade`
+- `pierillo-antislop-boring-toolkit update`
+- `pierillo-antislop-boring-toolkit upgrade`
 
 ---
 
 ## Release
 
 - Release actual:  
-  https://github.com/Pierillo/gentle-ai/releases/tag/v1.30.11-copilotcli.3
+  https://github.com/Pierillo/pierillo-antislop-boring-toolkit/releases/tag/v1.30.11-antislop.1
 - PR de documentación/alcance del port (mergeado):  
-  https://github.com/Pierillo/gentle-ai/pull/1
+  https://github.com/Pierillo/pierillo-antislop-boring-toolkit/pull/1
 
 ---
 
