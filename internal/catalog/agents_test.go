@@ -89,3 +89,22 @@ func TestAllAgentsIncludesCopilotCLI(t *testing.T) {
 
 	t.Fatalf("AllAgents() missing %s", model.AgentCopilotCLI)
 }
+
+func TestAllAgentsCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	agents := AllAgents()
+	if len(agents) != 1 {
+		t.Fatalf("AllAgents() len = %d, want 1", len(agents))
+	}
+	if agents[0].ID != model.AgentCopilotCLI {
+		t.Fatalf("AllAgents()[0].ID = %q, want %q", agents[0].ID, model.AgentCopilotCLI)
+	}
+	if IsSupportedAgent(model.AgentOpenCode) {
+		t.Fatalf("IsSupportedAgent(%q) = true, want false in copilot-only build", model.AgentOpenCode)
+	}
+}

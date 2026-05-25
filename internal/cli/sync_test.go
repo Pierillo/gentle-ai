@@ -39,6 +39,23 @@ func TestParseSyncFlagsDefaults(t *testing.T) {
 	}
 }
 
+func TestBuildSyncSelectionCopilotOnlyExcludesGGA(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	agents := []model.AgentID{model.AgentCopilotCLI}
+	sel := BuildSyncSelection(SyncFlags{}, agents)
+
+	for _, comp := range sel.Components {
+		if comp == model.ComponentGGA {
+			t.Fatalf("BuildSyncSelection() included %q in copilot-only build", model.ComponentGGA)
+		}
+	}
+}
+
 func TestParseSyncFlagsAgentsCSV(t *testing.T) {
 	flags, err := ParseSyncFlags([]string{"--agents", "claude-code,opencode"})
 	if err != nil {
@@ -184,6 +201,19 @@ func TestParseSyncFlagsUnknownFlagReturnsError(t *testing.T) {
 	_, err := ParseSyncFlags([]string{"--unknown-flag"})
 	if err == nil {
 		t.Fatalf("ParseSyncFlags() expected error for unknown flag")
+	}
+}
+
+func TestRunSyncCopilotOnlyRejectsNonCopilotAgent(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	_, err := RunSync([]string{"--agent", string(model.AgentOpenCode), "--dry-run"})
+	if err == nil {
+		t.Fatalf("RunSync() expected error in copilot-only build")
 	}
 }
 

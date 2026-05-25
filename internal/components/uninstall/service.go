@@ -98,6 +98,20 @@ var (
 		model.ComponentClaudeTheme,
 		model.ComponentOpenCodeGentleLogo,
 	}
+	copilotOnlyManagedComponents = []model.ComponentID{
+		model.ComponentPersona,
+		model.ComponentEngram,
+		model.ComponentContext7,
+		model.ComponentSDD,
+		model.ComponentSkills,
+	}
+	copilotOnlyFullAgentRemovalComponents = []model.ComponentID{
+		model.ComponentPersona,
+		model.ComponentEngram,
+		model.ComponentContext7,
+		model.ComponentSDD,
+		model.ComponentSkills,
+	}
 	sddPhaseAgents = []string{
 		"sdd-orchestrator",
 		"sdd-init",
@@ -113,6 +127,20 @@ var (
 	}
 	sddSkillPhaseIDs = sddPhaseAgents[1:]
 )
+
+func managedComponentsForBuild() []model.ComponentID {
+	if model.IsCopilotOnlyBuild() {
+		return copilotOnlyManagedComponents
+	}
+	return allManagedComponents
+}
+
+func fullAgentRemovalComponentsForBuild() []model.ComponentID {
+	if model.IsCopilotOnlyBuild() {
+		return copilotOnlyFullAgentRemovalComponents
+	}
+	return fullAgentRemovalComponents
+}
 
 type operation struct {
 	typeID opType
@@ -200,7 +228,7 @@ func (s *Service) PartialUninstall(agentIDs []model.AgentID, componentIDs []mode
 
 	components := componentIDs
 	if len(components) == 0 {
-		components = slices.Clone(allManagedComponents)
+		components = slices.Clone(managedComponentsForBuild())
 	}
 
 	plan, err := s.buildPlan(agentIDs, components)
@@ -227,7 +255,7 @@ func (s *Service) PartialUninstallWithProfiles(agentIDs []model.AgentID, compone
 
 	components := componentIDs
 	if len(components) == 0 {
-		components = slices.Clone(allManagedComponents)
+		components = slices.Clone(managedComponentsForBuild())
 	}
 
 	plan, err := s.buildPlan(agentIDs, components)
@@ -258,7 +286,7 @@ func (s *Service) CompleteUninstall() (Result, error) {
 	s.engramUninstallScope = model.EngramUninstallScopeGlobal
 
 	allAgents := s.registry.SupportedAgents()
-	plan, err := s.buildPlan(allAgents, allManagedComponents)
+	plan, err := s.buildPlan(allAgents, managedComponentsForBuild())
 	if err != nil {
 		return Result{}, err
 	}
@@ -1103,6 +1131,10 @@ func managedSDDSkillIDs() []string {
 }
 
 func globalBackupTargets(homeDir string) []string {
+	if model.IsCopilotOnlyBuild() {
+		return nil
+	}
+
 	return []string{
 		gga.ConfigPath(homeDir),
 		gga.AgentsTemplatePath(homeDir),
@@ -1114,7 +1146,7 @@ func stateAgentsToRemove(agentIDs []model.AgentID, componentIDs []model.Componen
 	for _, componentID := range componentIDs {
 		selected[componentID] = struct{}{}
 	}
-	for _, required := range fullAgentRemovalComponents {
+	for _, required := range fullAgentRemovalComponentsForBuild() {
 		if _, ok := selected[required]; !ok {
 			return nil
 		}

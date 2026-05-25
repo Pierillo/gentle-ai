@@ -27,26 +27,46 @@ var allAgents = []Agent{
 	{ID: model.AgentPi, Name: "Pi", Tier: model.TierFull, ConfigPath: "~/.pi"},
 }
 
+var copilotOnlyAgents = []Agent{
+	{ID: model.AgentCopilotCLI, Name: "Copilot CLI", Tier: model.TierFull, ConfigPath: "~/.copilot"},
+}
+
 // mvpAgents are the original MVP agents (Claude Code, OpenCode).
 var mvpAgents = []Agent{
 	{ID: model.AgentClaudeCode, Name: "Claude Code", Tier: model.TierFull, ConfigPath: "~/.claude"},
 	{ID: model.AgentOpenCode, Name: "OpenCode", Tier: model.TierFull, ConfigPath: "~/.config/opencode"},
 }
 
+func supportedAgents() []Agent {
+	if model.IsCopilotOnlyBuild() {
+		return copilotOnlyAgents
+	}
+	return allAgents
+}
+
+func supportedMVPAgents() []Agent {
+	if model.IsCopilotOnlyBuild() {
+		return copilotOnlyAgents
+	}
+	return mvpAgents
+}
+
 func AllAgents() []Agent {
-	agents := make([]Agent, len(allAgents))
-	copy(agents, allAgents)
+	source := supportedAgents()
+	agents := make([]Agent, len(source))
+	copy(agents, source)
 	return agents
 }
 
 func MVPAgents() []Agent {
-	agents := make([]Agent, len(mvpAgents))
-	copy(agents, mvpAgents)
+	source := supportedMVPAgents()
+	agents := make([]Agent, len(source))
+	copy(agents, source)
 	return agents
 }
 
 func IsMVPAgent(agent model.AgentID) bool {
-	for _, current := range mvpAgents {
+	for _, current := range supportedMVPAgents() {
 		if current.ID == agent {
 			return true
 		}
@@ -56,7 +76,7 @@ func IsMVPAgent(agent model.AgentID) bool {
 }
 
 func IsSupportedAgent(agent model.AgentID) bool {
-	for _, current := range allAgents {
+	for _, current := range supportedAgents() {
 		if current.ID == agent {
 			return true
 		}

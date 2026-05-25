@@ -3,6 +3,8 @@ package system
 import (
 	"os"
 	"path/filepath"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 // ConfigState records the filesystem presence of an agent's global config directory.
@@ -28,6 +30,12 @@ type ConfigState struct {
 // until the import cycle is resolved and ScanConfigs can delegate directly to
 // agents.DiscoverInstalled.
 func knownAgentConfigDirs(homeDir string) []ConfigState {
+	if model.IsCopilotOnlyBuild() {
+		return []ConfigState{
+			{Agent: "copilot-cli", Path: vscodeCopilotGlobalConfigDir(homeDir)},
+		}
+	}
+
 	return []ConfigState{
 		{Agent: "claude-code", Path: filepath.Join(homeDir, ".claude")},
 		{Agent: "opencode", Path: filepath.Join(homeDir, ".config", "opencode")},

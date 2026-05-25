@@ -21,25 +21,34 @@ import (
 	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
-var defaultAgentIDs = []model.AgentID{
-	model.AgentClaudeCode,
-	model.AgentOpenCode,
-	model.AgentKilocode,
-	model.AgentGeminiCLI,
-	model.AgentCursor,
-	model.AgentVSCodeCopilot,
-	model.AgentCopilotCLI,
-	model.AgentCodex,
-	model.AgentAntigravity,
-	model.AgentWindsurf,
-	model.AgentKimi,
-	model.AgentQwenCode,
-	model.AgentKiroIDE,
-	model.AgentOpenClaw,
-	model.AgentPi,
+func defaultAgentIDs() []model.AgentID {
+	if model.IsCopilotOnlyBuild() {
+		return []model.AgentID{model.AgentCopilotCLI}
+	}
+	return []model.AgentID{
+		model.AgentClaudeCode,
+		model.AgentOpenCode,
+		model.AgentKilocode,
+		model.AgentGeminiCLI,
+		model.AgentCursor,
+		model.AgentVSCodeCopilot,
+		model.AgentCopilotCLI,
+		model.AgentCodex,
+		model.AgentAntigravity,
+		model.AgentWindsurf,
+		model.AgentKimi,
+		model.AgentQwenCode,
+		model.AgentKiroIDE,
+		model.AgentOpenClaw,
+		model.AgentPi,
+	}
 }
 
 func NewAdapter(agent model.AgentID) (Adapter, error) {
+	if model.IsCopilotOnlyBuild() && agent != model.AgentCopilotCLI {
+		return nil, AgentNotSupportedError{Agent: agent}
+	}
+
 	switch agent {
 	case model.AgentClaudeCode:
 		return claude.NewAdapter(), nil
@@ -77,9 +86,10 @@ func NewAdapter(agent model.AgentID) (Adapter, error) {
 }
 
 func NewDefaultRegistry() (*Registry, error) {
-	adapters := make([]Adapter, 0, len(defaultAgentIDs))
+	agentIDs := defaultAgentIDs()
+	adapters := make([]Adapter, 0, len(agentIDs))
 
-	for _, agent := range defaultAgentIDs {
+	for _, agent := range agentIDs {
 		adapter, err := NewAdapter(agent)
 		if err != nil {
 			return nil, fmt.Errorf("create %s adapter: %w", agent, err)

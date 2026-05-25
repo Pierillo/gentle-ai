@@ -4,6 +4,8 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 // TestScanConfigs_ReturnsAllKnownAgentsWithExistsFlag verifies the canonical
@@ -163,6 +165,23 @@ func TestScanConfigs_IsDirectorySetForExistingDirs(t *testing.T) {
 	}
 	if !opencodeFound {
 		t.Error("ScanConfigs() missing opencode entry")
+	}
+}
+
+func TestScanConfigsCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	home := t.TempDir()
+	configs := ScanConfigs(home)
+	if len(configs) != 1 {
+		t.Fatalf("ScanConfigs() len = %d, want 1", len(configs))
+	}
+	if configs[0].Agent != string(model.AgentCopilotCLI) {
+		t.Fatalf("ScanConfigs()[0].Agent = %q, want %q", configs[0].Agent, model.AgentCopilotCLI)
 	}
 }
 

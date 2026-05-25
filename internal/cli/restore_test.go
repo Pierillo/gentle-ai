@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gentleman-programming/gentle-ai/internal/backup"
+	"github.com/gentleman-programming/gentle-ai/internal/model"
 )
 
 // setupRestoreHome creates a temporary home dir with N backup manifests.
@@ -142,6 +143,48 @@ func TestRunRestore_UnknownIDReturnsError(t *testing.T) {
 
 	if restoreCalled {
 		t.Errorf("restorer must NOT be called for unknown backup ID")
+	}
+}
+
+func TestRunRestore_UsageUsesCopilotCommandNameInCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	home := setupRestoreHome(t, 1)
+	restoreHomeDir(t, home)
+
+	restorer := func(m backup.Manifest) error { return nil }
+	var out strings.Builder
+	err := RunRestoreWithFn([]string{}, restorer, &out)
+	if err == nil {
+		t.Fatal("RunRestoreWithFn() expected usage error")
+	}
+	if !strings.Contains(err.Error(), "usage: gentle-copilot restore") {
+		t.Fatalf("usage error should reference gentle-copilot; got: %v", err)
+	}
+}
+
+func TestRunRestore_UnknownIDErrorUsesCopilotCommandNameInCopilotOnlyBuild(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	home := setupRestoreHome(t, 1)
+	restoreHomeDir(t, home)
+
+	restorer := func(m backup.Manifest) error { return nil }
+	var out strings.Builder
+	err := RunRestoreWithFn([]string{"missing", "--yes"}, restorer, &out)
+	if err == nil {
+		t.Fatal("RunRestoreWithFn() expected unknown backup error")
+	}
+	if !strings.Contains(err.Error(), "gentle-copilot restore --list") {
+		t.Fatalf("unknown backup error should reference gentle-copilot; got: %v", err)
 	}
 }
 

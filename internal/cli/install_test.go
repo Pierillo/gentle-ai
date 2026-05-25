@@ -149,6 +149,21 @@ func TestNormalizeInstallFlagsRejectsUnknownPersona(t *testing.T) {
 	}
 }
 
+func TestNormalizeInstallFlagsCopilotOnlyRejectsNonCopilotAgent(t *testing.T) {
+	prev := model.BuildFlavor
+	model.BuildFlavor = "copilot-only"
+	t.Cleanup(func() {
+		model.BuildFlavor = prev
+	})
+
+	_, err := NormalizeInstallFlags(InstallFlags{
+		Agents: []string{string(model.AgentOpenCode)},
+	}, system.DetectionResult{})
+	if err == nil {
+		t.Fatalf("NormalizeInstallFlags() expected error in copilot-only build")
+	}
+}
+
 func TestNormalizeSDDMode(t *testing.T) {
 	tests := []struct {
 		name    string
