@@ -1,6 +1,6 @@
 version: 2
 
-project_name: gentle-ai
+project_name: pierillo-antislop-boring-toolkit
 
 before:
   hooks:
@@ -20,9 +20,9 @@ builds:
       - arm64
     ldflags:
       - -s -w -X main.version={{.Version}}
-  - id: gentle-copilot
-    main: ./cmd/gentle-copilot
-    binary: gentle-copilot
+  - id: pierillo-antislop-boring-toolkit
+    main: ./cmd/pierillo-antislop-boring-toolkit
+    binary: pierillo-antislop-boring-toolkit
     env:
       - CGO_ENABLED=0
     goos:

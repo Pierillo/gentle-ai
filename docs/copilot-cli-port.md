@@ -11,7 +11,7 @@ This repository is a **port of Gentle-AI** narrowed to a **Copilot CLI-only** ex
 | Area | Port behavior |
 | --- | --- |
 | Supported agent | `copilot-cli` only |
-| Command name | `gentle-copilot` |
+| Command name | `pierillo-antislop-boring-toolkit` |
 | Config scan | `~/.copilot` only |
 | Main managed files | `~/.copilot/copilot-instructions.md`, `~/.copilot/skills/*`, `~/.copilot/mcp.json` |
 
@@ -29,12 +29,12 @@ This repository is a **port of Gentle-AI** narrowed to a **Copilot CLI-only** ex
 ## Release and installation
 
 - Current release:  
-  https://github.com/Pierillo/gentle-ai/releases/tag/v1.30.11-copilotcli.3
+  https://github.com/Pierillo/pierillo-antislop-boring-toolkit/releases/tag/v1.30.11-antislop.1
 
 - Scoop install (direct manifest):
 
 ```powershell
-scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
+scoop install https://github.com/Pierillo/pierillo-antislop-boring-toolkit/releases/download/v1.30.11-antislop.1/pierillo-antislop-boring-toolkit.json
 ```
 
 ---

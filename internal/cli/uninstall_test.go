@@ -31,7 +31,7 @@ func TestPromptUninstallConfirmUsesCopilotCommandNameInCopilotOnlyBuild(t *testi
 	if !confirmed {
 		t.Fatal("promptUninstallConfirm() should confirm on yes input")
 	}
-	if !strings.Contains(out.String(), "gentle-copilot managed configuration") {
-		t.Fatalf("prompt should mention gentle-copilot branding; got:\n%s", out.String())
+	if !strings.Contains(out.String(), "pierillo-antislop-boring-toolkit managed configuration") {
+		t.Fatalf("prompt should mention pierillo-antislop-boring-toolkit branding; got:\n%s", out.String())
 	}
 }

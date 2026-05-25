@@ -12,7 +12,7 @@ import (
 var version = "dev"
 
 func main() {
-	app.CommandName = "gentle-copilot"
+	app.CommandName = "pierillo-antislop-boring-toolkit"
 	model.BuildFlavor = "copilot-only"
 	app.Version = app.ResolveVersion(version)
 
@@ -21,4 +21,3 @@ func main() {
 		os.Exit(1)
 	}
 }
-
