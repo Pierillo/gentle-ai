@@ -88,17 +88,10 @@ The goal is not ceremony. The goal is to avoid accidental chaos while preserving
 
 ## Quick Start
 
-### macOS / Linux
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/Gentleman-Programming/gentle-ai/main/scripts/install.sh | bash
-```
-
-### Windows
+### Windows (recommended for this port)
 
 ```powershell
-scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket
-scoop install gentle-ai
+scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
 ```
 
 ### After install: project-level setup
@@ -108,7 +101,7 @@ Once your agents are configured, open your AI agent in a project and run these t
 | Command                            | What it does                                                                | When to re-run                                                                 |
 | ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
 | `/sdd-init`                        | Detects stack, testing capabilities, activates Strict TDD Mode if available | When your project adds/removes test frameworks, or first time in a new project |
-| `gentle-ai skill-registry refresh` | Scans installed skills and project conventions, builds the registry         | After installing/removing skills, or first time in a new project               |
+| `gentle-copilot skill-registry refresh` | Scans installed skills and project conventions, builds the registry         | After installing/removing skills, or first time in a new project               |
 
 These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init` automatically if it detects no context. Startup hooks normally keep the skill registry fresh for agents that support hooks, including Pi through `gentle-pi`. If you start Pi with `pi -ns`, startup skill loading/hooks are skipped, so run the registry refresh manually when you need updated project rules.
 
@@ -119,31 +112,28 @@ These are **not required** for basic usage. The SDD orchestrator runs `/sdd-init
 ### Recommended
 
 ```bash
-# macOS / Linux
-brew tap Gentleman-Programming/homebrew-tap
-brew install gentle-ai
-
 # Windows
-scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket
-scoop install gentle-ai
+scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
 ```
 
 <details>
-<summary><strong>Other install methods</strong> (Go install)</summary>
+<summary><strong>Other install methods</strong> (build from source)</summary>
 
-#### Go install (any platform with Go 1.24+)
+#### Build from source (any platform with Go 1.24+)
 
 ```bash
-go install github.com/gentleman-programming/gentle-ai/cmd/gentle-ai@latest
+git clone https://github.com/Pierillo/gentle-ai.git
+cd gentle-ai
+git checkout copilot-cli-port-release
+go build -o gentle-copilot ./cmd/gentle-copilot
 ```
 
 #### Windows
 
-Use Scoop on Windows. It is the supported install path for keeping Gentle AI updated cleanly:
+Use Scoop on Windows. It is the supported install path for this Copilot-only port:
 
 ```powershell
-scoop bucket add gentleman https://github.com/Gentleman-Programming/scoop-bucket
-scoop install gentle-ai
+scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
 ```
 
 </details>
