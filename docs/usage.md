@@ -4,6 +4,10 @@
 
 ---
 
+> **Port note (this fork):** this is a Copilot CLI-focused port. Use `gentle-copilot` (not `gentle-ai`) and `copilot-cli` as the only supported agent target. In this port, `update` and `upgrade` are disabled intentionally.
+
+---
+
 ## Persona Modes
 
 | Persona   | ID          | Description                                                                       |
@@ -157,6 +161,8 @@ gentle-ai update
 # Upgrade to the latest release (downloads new binary, replaces current)
 gentle-ai upgrade
 ```
+
+> In the Copilot-only port build (`gentle-copilot`), `update` and `upgrade` are disabled. Distribute updates through your internal release channel/repo.
 
 After upgrading, run `gentle-ai sync` to refresh all managed assets to the new version's content.
 

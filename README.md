@@ -17,6 +17,28 @@
 
 ---
 
+## ⚠️ Port Status (GitHub Copilot CLI fork)
+
+This repository/branch is a **port of Gentle-AI focused on GitHub Copilot CLI**.
+
+- Binary/command name in this port: **`gentle-copilot`**
+- Agent scope in this port: **`copilot-cli` only**
+- Primary surfaces managed: `~/.copilot/copilot-instructions.md`, `~/.copilot/skills/*`, `~/.copilot/mcp.json`
+- Commands available in this port: `install`, `sync`, `uninstall`, `restore`, `version`, `skill-registry refresh`
+- In this port, `update`/`upgrade` are intentionally disabled (expected update path is your internal release channel)
+
+Copilot-only release artifacts are published here:
+
+- https://github.com/Pierillo/gentle-ai/releases/tag/v1.30.11-copilotcli.3
+
+Scoop install (direct manifest URL):
+
+```powershell
+scoop install https://github.com/Pierillo/gentle-ai/releases/download/v1.30.11-copilotcli.3/gentle-copilot.json
+```
+
+---
+
 ## What It Does
 
 Gentle-AI is NOT an AI agent installer. Most agents are easy to install. It is an **ecosystem configurator** -- it takes whatever AI coding agent(s) you use and supercharges them with persistent memory, Spec-Driven Development workflows, curated coding skills, MCP servers, an AI provider switcher, a teaching-oriented persona with security-first permissions, and per-phase model assignment so each SDD step can run on a different model.
@@ -179,6 +201,7 @@ engram tui                    # Visual memory browser
 
 | Topic                                              | Description                                                                             |
 | -------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| [Copilot CLI Port](docs/copilot-cli-port.md)      | Scope of this fork, command differences, disabled surfaces, and release/install path   |
 | [Intended Usage](docs/intended-usage.md)           | How Gentle-AI is meant to be used — the mental model                                    |
 | [OpenCode SDD Profiles](docs/opencode-profiles.md) | Create and manage per-phase model profiles for OpenCode                                 |
 | [Engram Commands](docs/engram.md)                  | CLI commands, MCP tools, project management, team sharing                               |
